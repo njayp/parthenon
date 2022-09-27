@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testo
+  #namespace: testo
+  labels:
+    app: testo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: testo
+  template:
+    metadata:
+      labels:
+        app: testo
+    spec:
+      serviceAccountName: testo-sa
+      containers:
+      - name: testo
+        image: njpowell/testo:latest

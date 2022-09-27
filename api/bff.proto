@@ -1,0 +1,13 @@
+syntax = "proto3";
+package api;
+option go_package = "./api";
+
+service BFF {
+    rpc BoyfriendBot(BoyfriendRequest) returns (BoyfriendResponse);
+}
+
+message BoyfriendRequest {}
+
+message BoyfriendResponse {
+    string emoji = 1;
+}

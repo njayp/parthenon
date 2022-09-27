@@ -1,0 +1,7 @@
+resources:
+#- ns.yml
+- deploy.yml
+- https://github.com/grpc/grpc-web/blob/master/net/grpc/gateway/examples/echo/envoy.yaml
+#- clusterrole.yml
+#- clusterrolebinding.yml
+#- serviceaccount.yml
