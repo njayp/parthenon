@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 
+	"github.com/njayp/parthenon/pkg/bff/db"
 	gs "github.com/njayp/parthenon/pkg/bff/grpc"
 	"github.com/njayp/parthenon/pkg/bff/grpc/client"
 	hs "github.com/njayp/parthenon/pkg/bff/http"
@@ -23,7 +24,7 @@ var (
 )
 
 func main() {
-	clientMain()
+	serverMain()
 }
 
 func serverMain() {
@@ -62,4 +63,13 @@ func clientMain() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+}
+
+func dbclientMain() {
+	client := db.NewMYSQL()
+	text, err := client.Query("show tables;")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	log.Print(text)
 }

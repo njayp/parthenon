@@ -1,4 +1,4 @@
-.PHONY: gen build push apply all run emissary emissary-update
+.PHONY: gen build push apply all run emissary emissary-update dbcli
 gen:
 	### go grpc gen
 	rm -rf ./pkg/api
@@ -51,3 +51,6 @@ emissary: emissary-update
 	helm install -n emissary --create-namespace \
     	emissary-ingress datawire/emissary-ingress && \
  		kubectl rollout status -n emissary deployment/emissary-ingress -w
+
+dbcli:
+	kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword

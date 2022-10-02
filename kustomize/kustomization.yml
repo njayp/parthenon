@@ -1,7 +1,8 @@
 resources:
 #- ns.yml
-- deploy.yml
-- service.yml
+- bff.yml
+- db.yml
+- db_volume.yml
 - host.yml
 - mapping.yml
 - module.yml
