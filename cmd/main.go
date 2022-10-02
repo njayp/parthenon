@@ -2,12 +2,12 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
-	"net"
 
-	bff "github.com/njayp/parthenon/pkg/api"
-	"github.com/njayp/parthenon/pkg/bff/server"
+	gs "github.com/njayp/parthenon/pkg/bff/grpc"
+	"github.com/njayp/parthenon/pkg/bff/grpc/client"
+	hs "github.com/njayp/parthenon/pkg/bff/http"
+
 	"google.golang.org/grpc"
 )
 
@@ -18,34 +18,48 @@ var (
 		keyFile    = flag.String("key_file", "", "The TLS key file")
 		jsonDBFile = flag.String("json_db_file", "", "A json file containing a list of features")
 	*/
-	port = flag.Int("port", 9090, "The server port")
+	grpcPort = flag.Int("gport", 9090, "The grpc port")
+	httpPort = flag.Int("hport", 8080, "The http port")
 )
 
 func main() {
-	flag.Parse()
-	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", *port))
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	log.Printf("listening on port %v", *port)
-	var opts []grpc.ServerOption
-	/*
-		if *tls {
-			if *certFile == "" {
-				*certFile = data.Path("x509/server_cert.pem")
-			}
-			if *keyFile == "" {
-				*keyFile = data.Path("x509/server_key.pem")
-			}
-			creds, err := credentials.NewServerTLSFromFile(*certFile, *keyFile)
-			if err != nil {
-				log.Fatalf("Failed to generate credentials %v", err)
-			}
-			opts = []grpc.ServerOption{grpc.Creds(creds)}
-		}
-	*/
+	clientMain()
+}
 
-	grpcServer := grpc.NewServer(opts...)
-	bff.RegisterBFFServer(grpcServer, server.NewServer())
-	grpcServer.Serve(lis)
+func serverMain() {
+	flag.Parse()
+	ch := make(chan error)
+	go func() {
+		var opts []grpc.ServerOption
+		/*
+			if *tls {
+				if *certFile == "" {
+					*certFile = data.Path("x509/server_cert.pem")
+				}
+				if *keyFile == "" {
+					*keyFile = data.Path("x509/server_key.pem")
+				}
+				creds, err := credentials.NewServerTLSFromFile(*certFile, *keyFile)
+				if err != nil {
+					log.Fatalf("Failed to generate credentials %v", err)
+				}
+				opts = []grpc.ServerOption{grpc.Creds(creds)}
+			}
+		*/
+		ch <- gs.Start(*grpcPort, opts)
+	}()
+
+	go func() {
+		ch <- hs.Start(*httpPort)
+	}()
+
+	err := <-ch
+	log.Fatal(err.Error())
+}
+
+func clientMain() {
+	err := client.Meow()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 }

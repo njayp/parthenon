@@ -1,21 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: testo
-  #namespace: testo
-  labels:
-    app: testo
+  name: bff
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: testo
+      app: bff
   template:
     metadata:
       labels:
-        app: testo
+        app: bff
     spec:
-      serviceAccountName: testo-sa
       containers:
-      - name: testo
-        image: njpowell/testo:latest
+      - name: bff
+        image: njpowell/parthenon:latest
+        ports:
+        - name: grpc
+          containerPort: 9090
+        - name: http
+          containerPort: 8080

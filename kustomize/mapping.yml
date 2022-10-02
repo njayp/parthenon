@@ -1,0 +1,52 @@
+apiVersion: getambassador.io/v3alpha1
+kind: Mapping
+metadata:
+  name: grpc-map
+spec:
+  hostname: "*"
+  grpc: True
+  prefix: /api.BFF/
+  rewrite: /api.BFF/
+  service: bff-svc.default:90
+  timeout_ms: 4000
+  idle_timeout_ms: 500000
+  connect_timeout_ms: 2000
+  bypass_auth: true
+  dns_type: logical_dns
+  cors:
+    origins:
+    - "*"
+    methods: 
+    - POST
+    - GET
+    - OPTIONS
+    - PUT
+    - DELETE
+    headers: 
+    - keep-alive
+    - user-agent
+    - cache-control
+    - content-type
+    - content-transfer-encoding
+    - custom-header-1
+    - x-accept-content-transfer-encoding
+    - x-accept-response-streaming
+    - x-user-agent
+    - x-grpc-web
+    - grpc-timeout
+    exposed_headers: 
+    - custom-header-1
+    - grpc-status
+    - grpc-message
+
+---
+
+apiVersion: getambassador.io/v3alpha1
+kind: Mapping
+metadata:
+  name: http-map
+spec:
+  hostname: "*"
+  prefix: /livez/
+  rewrite: /livez/
+  service: bff-svc.default:80

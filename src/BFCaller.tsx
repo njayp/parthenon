@@ -3,7 +3,7 @@ import { BFFClient } from "./api/BffServiceClientPb";
 import { BoyfriendRequest } from "./api/bff_pb";
 import { Button, TextField, Stack } from "@mui/material";
 
-const address = "http://localhost:8080";
+const address = "http://localhost";
 const client = new BFFClient(address, null, null);
 
 export function BFCaller() {

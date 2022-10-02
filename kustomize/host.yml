@@ -1,0 +1,11 @@
+apiVersion: getambassador.io/v3alpha1
+kind: Host
+metadata:
+  name: example-host
+spec:
+  hostname: localhost
+  acmeProvider:
+    authority: none
+  requestPolicy:
+    insecure:
+      action: Route

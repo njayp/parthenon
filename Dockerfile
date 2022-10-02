@@ -1,10 +1,9 @@
 FROM golang:alpine AS build
-
 WORKDIR /app
 COPY . .
 WORKDIR /app/cmd
-RUN CGO_ENABLED=0 go build -o /bin/podLogger
+RUN CGO_ENABLED=0 go build -o /bin/bff
 
 FROM alpine
-COPY --from=build /bin/podLogger /bin/podLogger
-ENTRYPOINT ["podLogger"]
+COPY --from=build /bin/bff /bin/bff
+ENTRYPOINT ["bff"]

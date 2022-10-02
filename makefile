@@ -1,4 +1,4 @@
-.PHONY: gen build push apply all run
+.PHONY: gen build push apply all run emissary emissary-update
 gen:
 	### go grpc gen
 	rm -rf ./pkg/api
@@ -27,16 +27,16 @@ gen:
 	yarn
 
 build:
-	docker build -t njpowell/testo .
+	docker build -t njpowell/parthenon .
 
 push: 
-	docker push njpowell/testo
+	docker push njpowell/parthenon
 
-apply: 
+apply:
 	-kubectl delete -k kustomize
 	kubectl apply -k kustomize
 
-all: generate build push apply
+all: gen build push apply
 
 run:
 	go run cmd/main.go
@@ -46,8 +46,8 @@ emissary-update:
 	helm repo update
 
 emissary: emissary-update
-	kubectl apply -f https://app.getambassador.io/yaml/emissary/3.1.0/emissary-crds.yaml
+	kubectl apply -f https://app.getambassador.io/yaml/emissary/3.2.0/emissary-crds.yaml
 	kubectl wait --timeout=90s --for=condition=available deployment emissary-apiext -n emissary-system
 	helm install -n emissary --create-namespace \
     	emissary-ingress datawire/emissary-ingress && \
- 		kubectl rollout status  -n emissary deployment/emissary-ingress -w
+ 		kubectl rollout status -n emissary deployment/emissary-ingress -w
