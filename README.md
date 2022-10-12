@@ -1,10 +1,16 @@
 # parthenon
 
+## tools
+
+### kubectl
+
+brew install kubectl
+
+### protoc
+
+brew install protobuf
+
 ## cluster setup
-
-### install kubectl
-
-kubectl is a command line client for k8. [install page](https://kubernetes.io/docs/tasks/tools/)
 
 ### start k8 cluster
 
@@ -12,8 +18,8 @@ In docker click on settings (the gear icon), go to the kubernetes tab, and choos
 
 ### setup k8 cluster
 
-run `make emissary`, then `make apply`
+run `make emissary`, then `make build apply`
 
-### start dev server
+## ts dev server
 
-run `yarn start`
+`make start`
