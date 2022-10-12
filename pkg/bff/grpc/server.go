@@ -14,17 +14,15 @@ type Server struct {
 }
 
 func Start(port int, opts []grpc.ServerOption) error {
+	log.Printf("http listening on port %v", port)
+	address := fmt.Sprintf(":%v", port)
+	lis, err := net.Listen("tcp", address)
+	if err != nil {
+		return err
+	}
+
 	grpcServer := grpc.NewServer(opts...)
 	server := &Server{}
 	api.RegisterBFFServer(grpcServer, server)
-	return grpcServer.Serve(makeListener(port))
-}
-
-func makeListener(port int) net.Listener {
-	lis, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", port))
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	log.Printf("grpc listening on port %v", port)
-	return lis
+	return grpcServer.Serve(lis)
 }

@@ -1,6 +1,8 @@
-.PHONY: gen build push apply all run emissary emissary-update dbcli
-gen:
-	### go grpc gen
+.PHONY: gen build push apply all run emissary emissary-update dbcli test-go test-ts test
+
+gen-grpc:
+	rm -rf ./src/api
+	mkdir -p ./src/api
 	rm -rf ./pkg/api
 	mkdir -p ./pkg/api
 	protoc \
@@ -10,21 +12,18 @@ gen:
     	--go_out=./pkg/api \
     	--go-grpc_opt=paths=source_relative \
     	--go-grpc_out=./pkg/api \
-    	$(shell find ./api -iname "*.proto") 2>&1 > /dev/null
-	
-	### js grpc gen
-	rm -rf ./src/api
-	mkdir -p ./src/api
-
-	protoc -I=./api \
-  		--js_out=import_style=commonjs,binary:./src/api \
+		--js_out=import_style=commonjs,binary:./src/api \
   		--grpc-web_out=import_style=typescript,mode=grpcweb:./src/api \
-		$(shell find ./api -iname "*.proto") 2>&1 > /dev/null
-	
-	
-	# build deps
+    	$(shell find ./api -iname "*.proto") 2>&1 > /dev/null
+
+gen-go:
 	go mod tidy
+	go generate ./...
+
+gen-ts:	
 	yarn
+
+gen: gen-grpc gen-go gen-ts
 
 build:
 	docker build -t njpowell/parthenon .
@@ -36,10 +35,16 @@ apply:
 	-kubectl delete -k kustomize
 	kubectl apply -k kustomize
 
-all: gen build push apply
+all: build push apply
 
+# runs main.go
 run:
 	go run cmd/main.go
+
+# starts the ts server
+start:
+	yarn
+	yarn start
 
 emissary-update:
 	helm repo add datawire https://app.getambassador.io
@@ -54,3 +59,11 @@ emissary: emissary-update
 
 dbcli:
 	kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword
+
+make test-ts:
+	yarn test --watchAll=false
+	
+make test-go:
+	go test ./...
+
+make test: test-go test-ts
