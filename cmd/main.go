@@ -5,9 +5,9 @@ import (
 	"log"
 
 	"github.com/njayp/parthenon/pkg/bff/db"
-	gs "github.com/njayp/parthenon/pkg/bff/grpc"
-	"github.com/njayp/parthenon/pkg/bff/grpc/client"
-	hs "github.com/njayp/parthenon/pkg/bff/http"
+	"github.com/njayp/parthenon/pkg/bff/grpcServer"
+	"github.com/njayp/parthenon/pkg/bff/grpcServer/client"
+	"github.com/njayp/parthenon/pkg/bff/httpServer"
 
 	"google.golang.org/grpc"
 )
@@ -47,11 +47,11 @@ func serverMain() {
 				opts = []grpc.ServerOption{grpc.Creds(creds)}
 			}
 		*/
-		ch <- gs.Start(*grpcPort, opts)
+		ch <- grpcServer.Start(*grpcPort, opts)
 	}()
 
 	go func() {
-		ch <- hs.Start(*httpPort)
+		ch <- httpServer.Start(*httpPort)
 	}()
 
 	err := <-ch

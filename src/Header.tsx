@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 import { Button, Stack } from "@mui/material";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import * as Pages from "./pages";

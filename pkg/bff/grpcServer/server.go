@@ -1,4 +1,4 @@
-package grpc
+package grpcServer
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ type Server struct {
 }
 
 func Start(port int, opts []grpc.ServerOption) error {
-	log.Printf("http listening on port %v", port)
+	log.Printf("grpc listening on port %v", port)
 	address := fmt.Sprintf(":%v", port)
 	lis, err := net.Listen("tcp", address)
 	if err != nil {

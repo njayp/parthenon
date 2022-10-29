@@ -60,10 +60,10 @@ emissary: emissary-update
 dbcli:
 	kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword
 
-make test-ts:
+test-ts:
 	yarn test --watchAll=false
 	
-make test-go:
+test-go:
 	go test ./...
 
-make test: test-go test-ts
+test: test-go test-ts

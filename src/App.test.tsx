@@ -1,9 +1,14 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import App from "./App";
+import { Header } from "./Header";
+import { MemoryRouter } from "react-router-dom";
 
 test("renders learn react link", () => {
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <Header />
+    </MemoryRouter>
+  );
   const linkElement = screen.getByText(/Home/i);
   expect(linkElement).toBeInTheDocument();
 });

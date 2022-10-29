@@ -18,10 +18,10 @@ func Meow() error {
 	}
 	defer conn.Close()
 	client := api.NewBFFClient(conn)
-	responce, err := client.BoyfriendBot(context.TODO(), &api.BoyfriendRequest{})
+	response, err := client.BoyfriendBot(context.TODO(), &api.BoyfriendRequest{})
 	if err != nil {
 		return err
 	}
-	log.Print(responce.GetEmoji())
+	log.Print(response.GetEmoji())
 	return nil
 }
