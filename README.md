@@ -4,11 +4,11 @@
 
 ### kubectl
 
-brew install kubectl
+`brew install kubectl`
 
 ### protoc
 
-brew install protobuf
+`brew install protobuf`
 
 ## cluster setup
 
