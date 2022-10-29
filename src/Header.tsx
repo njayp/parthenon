@@ -7,8 +7,6 @@ export function Header() {
   let location = useLocation();
 
   function makeButton(page: Pages.Page) {
-    console.log(<Outlet />);
-
     return (
       <Button
         component={Link}

@@ -3,12 +3,14 @@ import { render, screen } from "@testing-library/react";
 import { Header } from "./Header";
 import { MemoryRouter } from "react-router-dom";
 
-test("renders learn react link", () => {
+describe("render header", () => {
   render(
     <MemoryRouter>
       <Header />
     </MemoryRouter>
   );
-  const linkElement = screen.getByText(/Home/i);
-  expect(linkElement).toBeInTheDocument();
+  it("home button exists", () => {
+    const linkElement = screen.getByText(/Home/i);
+    expect(linkElement).toBeInTheDocument();
+  });
 });
