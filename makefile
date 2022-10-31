@@ -1,4 +1,4 @@
-.PHONY: gen build push apply all run emissary emissary-update dbcli test-go test-ts test
+.PHONY: gen build push apply all run emissary emissary-update dbcli test-go test-ts test tools
 
 gen-grpc:
 	rm -rf ./src/api
@@ -67,3 +67,21 @@ test-go:
 	go test ./...
 
 test: test-go test-ts
+
+tools: tools-kubectl tools-protobuf tools-grpc-web
+
+tools-kubectl:
+	brew install kubectl
+
+# pins protoc at v1.20 because v1.21 is broken
+# TODO remove overwrite when v1.22 is released
+tools-protobuf:
+	brew install protobuf@3
+	brew link --overwrite protobuf@3
+
+# downloads amd binary pinned at 1.4.2
+# TODO get latest instead?
+tools-grpc-web:
+	curl https://github.com/grpc/grpc-web/releases/download/1.4.2/protoc-gen-grpc-web-1.4.2-darwin-x86_64 \
+		-Lo /usr/local/bin/protoc-gen-grpc-web
+	sudo chmod +x /usr/local/bin/protoc-gen-grpc-web

@@ -2,13 +2,7 @@
 
 ## tools
 
-### kubectl
-
-`brew install kubectl`
-
-### protoc
-
-`brew install protobuf`
+Run `make tools`. This will install kubectl, protobuf, and the grpc-web protoc plugin. This requires `brew`.
 
 ## cluster setup
 
