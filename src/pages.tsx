@@ -4,6 +4,7 @@ import { BFCaller } from "./BFCaller";
 import { Header } from "./Header";
 import { RouteProps } from "react-router-dom";
 import { Geo } from "./Geo";
+import { Fof } from "./Fof";
 
 // buttonLabel is used as key, so each should be unique
 export type Page = {
@@ -29,7 +30,7 @@ export const fofPage: Page = {
   buttonLabel: "404",
   routeProps: {
     path: "*",
-    element: <img src={"/fof.png"} alt="404 dragon" width={"50%"} />,
+    element: <Fof />,
   },
 };
 
