@@ -4,9 +4,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/njayp/parthenon/pkg/bff/db"
 	"github.com/njayp/parthenon/pkg/bff/grpcServer"
-	"github.com/njayp/parthenon/pkg/bff/grpcServer/client"
 	"github.com/njayp/parthenon/pkg/bff/httpServer"
 
 	"google.golang.org/grpc"
@@ -56,20 +54,4 @@ func serverMain() {
 
 	err := <-ch
 	log.Fatal(err.Error())
-}
-
-func clientMain() {
-	err := client.Meow()
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-}
-
-func dbclientMain() {
-	client := db.NewMYSQL()
-	text, err := client.Query("show tables;")
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	log.Print(text)
 }

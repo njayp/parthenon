@@ -1,4 +1,4 @@
-.PHONY: gen build push apply all run emissary emissary-update dbcli test-go test-ts test tools
+.PHONY: gen build push apply all run emissary emissary-update db dbcli test-go test-ts test tools tools-kubectl tools-protobuf tools-grpc-web
 
 gen-grpc:
 	rm -rf ./src/api
@@ -57,6 +57,10 @@ emissary: emissary-update
     	emissary-ingress datawire/emissary-ingress && \
  		kubectl rollout status -n emissary deployment/emissary-ingress -w
 
+db:
+	-docker rm -f mysql
+	docker run --name mysql -p 3306:3306 --rm -d -it -e MYSQL_ROOT_PASSWORD=password mysql
+
 dbcli:
 	kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword
 
@@ -73,8 +77,8 @@ tools: tools-kubectl tools-protobuf tools-grpc-web
 tools-kubectl:
 	brew install kubectl
 
-# pins protoc at v1.20 because v1.21 is broken
-# TODO remove overwrite when v1.22 is released
+# pins protoc at v3.20 because v3.21 is broken
+# TODO remove overwrite when v3.22 is released
 tools-protobuf:
 	brew install protobuf@3
 	brew link --overwrite protobuf@3
