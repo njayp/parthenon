@@ -10,8 +10,14 @@ export function Header() {
     return (
       <Button
         component={Link}
-        to={page.routeProps.path || "/"} // TODO replace with error page
-        disabled={location.pathname.endsWith(page.routeProps.path || "")}
+        to={page.routeProps.path || ""}
+        disabled={location.pathname.endsWith(
+          page.routeProps.path ||
+            console.log(
+              `${page.buttonLabel} does not have path attribute, it will be disabled`
+            ) ||
+            ""
+        )}
         key={page.buttonLabel}
       >
         {page.buttonLabel}
@@ -22,7 +28,9 @@ export function Header() {
   return (
     <Stack spacing={2} sx={{ backgroundColor: "#282c34", minHeight: "100vh" }}>
       <Stack spacing={2} direction="row">
-        {[Pages.homePage, Pages.bfPage].map((page) => makeButton(page))}
+        {[Pages.homePage, Pages.bfPage, Pages.geoPage].map((page) =>
+          makeButton(page)
+        )}
       </Stack>
       <Outlet />
     </Stack>

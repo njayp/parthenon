@@ -5,7 +5,7 @@ import { Route, Routes } from "react-router-dom";
 function App() {
   function makeRoutes(page: Page) {
     return (
-      <Route {...page.routeProps}>
+      <Route {...page.routeProps} key={page.buttonLabel}>
         {page.subPages?.map((page) => makeRoutes(page))}
       </Route>
     );
