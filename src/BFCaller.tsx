@@ -12,8 +12,8 @@ export function BFCaller() {
 
   function Meow() {
     client.boyfriendBot(new BoyfriendRequest(), null, (err, response) => {
-      setText(response?.getEmoji());
-      setErr(err?.message);
+      setText(response?.getEmoji() || "");
+      setErr(err?.message || "");
     });
   }
 
