@@ -23,10 +23,9 @@ func NewCompositeIndexDBC(db dbcli.DBCli) (*CompositeIndexDBC, error) {
 func (c *CompositeIndexDBC) EnsureTable(tableName string) {
 	c.BaseEnsureTable(
 		tableName,
-		`pk INT NOT NULL AUTO_INCREMENT,
-		latitude   INT NOT NULL,
-		longitude  	INT NOT NULL,
-		PRIMARY KEY(pk),
+		`pk INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+		latitude DECIMAL(6,5) NOT NULL, 
+        longitude DECIMAL(6,5) NOT NULL 
     	INDEX location (longitude,latitude)`,
 	)
 }
