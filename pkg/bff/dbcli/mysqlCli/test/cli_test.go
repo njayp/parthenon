@@ -43,7 +43,8 @@ func TestPing(t *testing.T) {
 		var text string
 		row := new(string)
 		for rows.Next() {
-			rows.Scan(row)
+			err := rows.Scan(row)
+			fatalErr(err)
 			text += *row
 		}
 		if !strings.Contains(text, dbname) {
