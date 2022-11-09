@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/njayp/parthenon/pkg/bff/dbcontroller/games"
 	"github.com/njayp/parthenon/pkg/bff/dbcontroller/games/spatialindex"
 	"github.com/njayp/parthenon/pkg/bff/dbcontroller/test"
 )
@@ -65,7 +66,6 @@ func TestDBC(t *testing.T) {
 
 	userid1 := "testuser1"
 	t.Run("add user to game", func(t *testing.T) {
-
 		err := dbc.SetUserLocation(userid1, "33.4581414", "-111.9071715")
 		if err != nil {
 			t.Error(err)
@@ -140,6 +140,20 @@ func TestDBC(t *testing.T) {
 			if strings.Contains(result.UserID(), userid3) {
 				t.Error("user3 was found but should not have been")
 			}
+		}
+
+		// make sure query uses spatial index
+		row := dbc.GetClient().QueryRow(fmt.Sprintf("EXPLAIN "+spatialindex.RADIUS_QUERY2, games.UserLocationVarName(userid3), gameName, games.UserLocationVarName(userid3)))
+		key := new(sql.NullString)
+		possibleKeys := new(sql.NullString)
+		keyLen := new(sql.NullString)
+		searchtype := new(sql.NullString)
+		err = row.Scan(new(sql.NullString), new(sql.NullString), new(sql.NullString), new(sql.NullString), searchtype, possibleKeys, key, keyLen, new(sql.NullString), new(sql.NullString), new(sql.NullString), new(sql.NullString))
+		if err != nil {
+			t.Error(err)
+		}
+		if key.String != "location" {
+			t.Error(fmt.Errorf("search type: %s\npossible: %s\nkey: %s\nkey len:%s", searchtype.String, possibleKeys.String, key.String, keyLen.String))
 		}
 	})
 }

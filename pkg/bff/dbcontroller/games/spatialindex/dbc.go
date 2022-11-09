@@ -9,6 +9,29 @@ import (
 	"github.com/njayp/parthenon/pkg/bff/dbcontroller/games"
 )
 
+const (
+	// ST_Distance_Sphere does not use index
+	RADIUS_QUERY = `SELECT userid,
+	ST_Distance_Sphere(location, %s) AS distance_m
+	FROM %s
+	HAVING distance_m <= 25000;`
+	// this uses index
+	RADIUS_QUERY2 = `SELECT userid, ST_Distance_Sphere(location, %s)
+	FROM %s
+	WHERE ST_Contains(ST_Buffer(%s, 25000), location);`
+	// again, no index
+	RADIUS_QUERY3 = `SELECT userid
+	FROM %s
+	WHERE ST_Distance_Sphere(location, %s) <= 25000;`
+	TABLE_PROPS = `pk INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	location POINT NOT NULL SRID 4326,
+	userid BINARY(16),
+	SPATIAL INDEX(location)`
+	INSERT_QUERY = `INSERT INTO %s(location, userid)
+	VALUES (%s,'%s');`
+	SET_USER_LOCATION_QUERY = `SET %s = ST_GeomFromText('POINT(%s %s)', 4326);`
+)
+
 type spatialIndexDBC struct {
 	dbcontroller.BaseDBController
 }
@@ -27,16 +50,13 @@ func NewSpatialIndexDBC(db dbcli.DBCli) (*spatialIndexDBC, error) {
 func (c *spatialIndexDBC) EnsureGame(tableName string) error {
 	return c.BaseEnsureTable(
 		tableName,
-		`pk INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-		location POINT NOT NULL SRID 4326,
-		userid BINARY(16),
-	  	SPATIAL INDEX(location)`,
+		TABLE_PROPS,
 	)
 }
 
 // TODO make thread-safe
 func (c *spatialIndexDBC) SetUserLocation(userid, latitude, longitude string) error {
-	query := fmt.Sprintf(`SET %s = ST_GeomFromText('POINT(%s %s)', 4326);`,
+	query := fmt.Sprintf(SET_USER_LOCATION_QUERY,
 		games.UserLocationVarName(userid),
 		latitude, longitude,
 	)
@@ -46,8 +66,7 @@ func (c *spatialIndexDBC) SetUserLocation(userid, latitude, longitude string) er
 
 func (c *spatialIndexDBC) AddUser(tableName, userid string) error {
 	query := fmt.Sprintf(
-		`INSERT INTO %s(location, userid)
-		VALUES (%s,'%s');`,
+		INSERT_QUERY,
 		tableName,
 		games.UserLocationVarName(userid),
 		userid,
@@ -57,12 +76,10 @@ func (c *spatialIndexDBC) AddUser(tableName, userid string) error {
 }
 
 func (c *spatialIndexDBC) SearchRadius(tableName, userid string) (*sql.Rows, error) {
-	query := fmt.Sprintf(`SELECT userid,
-		ST_Distance_Sphere(location, %s) AS distance_m
-		FROM %s
-		HAVING distance_m <= 25000;`,
+	query := fmt.Sprintf(RADIUS_QUERY2,
 		games.UserLocationVarName(userid),
 		tableName,
+		games.UserLocationVarName(userid),
 	)
 	return c.GetClient().Query(query)
 }
