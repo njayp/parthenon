@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func TestHTTP(t *testing.T) {
+func TestGRPC(t *testing.T) {
 	port := 9090
 	go grpcServer.Start(port, nil)
 

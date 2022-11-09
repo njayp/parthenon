@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	ENSURE_TABLE = "CREATE TABLE [IF NOT EXISTS] %s(%s);"
+	ENSURE_TABLE = "CREATE TABLE IF NOT EXISTS %s(%s);"
 )
 
 type BaseDBController struct {

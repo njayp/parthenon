@@ -1,8 +1,10 @@
 package dbcli
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
+	"time"
 )
 
 // shared logic for sql DBs
@@ -11,7 +13,7 @@ type BaseDBCli struct {
 	rootClient  *sql.DB
 }
 
-// DO NOT CALL. NO DRIVERS LOADED
+// DO NOT CALL DIRECTLY. NO DRIVERS LOADED
 func NewBaseDBCli(driver, hostName string) (*BaseDBCli, error) {
 	db := &BaseDBCli{
 		driver: driver,
@@ -31,7 +33,7 @@ func NewBaseDBCli(driver, hostName string) (*BaseDBCli, error) {
 }
 
 func (b *BaseDBCli) makeDB(dbName string) error {
-	_, err := b.rootClient.Exec(fmt.Sprintf("CREATE DATABASE [IF NOT EXISTS] %s", dbName))
+	_, err := b.rootClient.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s;", dbName))
 	return err
 }
 
@@ -46,4 +48,24 @@ func (b *BaseDBCli) EnsureDBandCli(dbName string) (*sql.DB, error) {
 		return nil, err
 	}
 	return b.makeCli(dbName)
+}
+
+func (b *BaseDBCli) Ping(ctx context.Context) error {
+	return b.rootClient.PingContext(ctx)
+}
+
+func (b *BaseDBCli) PingUntilConnect(ctx context.Context) error {
+	ticker := time.NewTicker(time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return fmt.Errorf("context cancelled")
+		case <-ticker.C:
+			if err := b.Ping(ctx); err == nil {
+				return nil
+			}
+		}
+	}
 }
