@@ -3,6 +3,8 @@ package runimage
 import (
 	"context"
 	"fmt"
+	"io"
+	"os"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -19,6 +21,15 @@ func DockerRunMYSQLWithCtx(ctx context.Context) (func(ctx context.Context) error
 		panic(err)
 	}
 
+	imageName := "mysql:latest"
+	reader, err := cli.ImagePull(ctx, imageName, types.ImagePullOptions{})
+	if err != nil {
+		panic(err)
+	}
+
+	defer reader.Close()
+	io.Copy(os.Stdout, reader)
+
 	hostBinding := nat.PortBinding{
 		HostIP:   "0.0.0.0",
 		HostPort: "3306",
@@ -32,7 +43,7 @@ func DockerRunMYSQLWithCtx(ctx context.Context) (func(ctx context.Context) error
 	cont, err := cli.ContainerCreate(
 		context.Background(),
 		&container.Config{
-			Image: "mysql:latest",
+			Image: imageName,
 			Env:   []string{"MYSQL_ROOT_PASSWORD=password"},
 		},
 		&container.HostConfig{

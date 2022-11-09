@@ -35,11 +35,10 @@ func (c *spatialIndexDBC) EnsureGame(tableName string) error {
 }
 
 // TODO make thread-safe
-func (c *spatialIndexDBC) SetUserLocation(userid, latitude, longituede string) error {
+func (c *spatialIndexDBC) SetUserLocation(userid, latitude, longitude string) error {
 	query := fmt.Sprintf(`SET %s = ST_GeomFromText('POINT(%s %s)', 4326);`,
 		games.UserLocationVarName(userid),
-		latitude,
-		longituede,
+		latitude, longitude,
 	)
 	_, err := c.GetClient().Exec(query)
 	return err
@@ -59,11 +58,45 @@ func (c *spatialIndexDBC) AddUser(tableName, userid string) error {
 
 func (c *spatialIndexDBC) SearchRadius(tableName, userid string) (*sql.Rows, error) {
 	query := fmt.Sprintf(`SELECT userid,
-		ST_Distance_Sphere('location', %s) AS distance_m
+		ST_Distance_Sphere(location, %s) AS distance_m
 		FROM %s
 		HAVING distance_m <= 25000;`,
 		games.UserLocationVarName(userid),
 		tableName,
 	)
 	return c.GetClient().Query(query)
+}
+
+type SearchResult struct {
+	userid   string
+	distance float64
+}
+
+func (s SearchResult) Distance() float64 {
+	return s.distance
+}
+
+func (s SearchResult) UserID() string {
+	return s.userid
+}
+
+func (c *spatialIndexDBC) ProcessSearchRadius(tableName, userid string) ([]SearchResult, error) {
+	rows, err := c.SearchRadius(tableName, userid)
+	if err != nil {
+		return nil, err
+	}
+	results := make([]SearchResult, 0)
+	for rows.Next() {
+		distance := new(float64)
+		userid := new(string)
+		err = rows.Scan(userid, distance)
+		if err != nil {
+			return nil, err
+		}
+		results = append(results, SearchResult{
+			userid:   *userid,
+			distance: *distance,
+		})
+	}
+	return results, nil
 }
