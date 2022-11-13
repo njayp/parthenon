@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func TestGRPC(t *testing.T) {
+func TestIndex(t *testing.T) {
 	port := 9090
 	go grpcServer.Start(port, nil)
 
@@ -24,15 +24,18 @@ func TestGRPC(t *testing.T) {
 	defer conn.Close()
 	client := api.NewBFFClient(conn)
 
-	t.Run("meow", func(t *testing.T) {
-		response, err := client.BoyfriendBot(context.TODO(), &api.BoyfriendRequest{})
-		if err != nil {
-			t.Fatal(err.Error())
-		}
-		text := response.GetEmoji()
-		expected := "🐢"
-		if text != expected {
-			t.Errorf("response text '%s' does not contian '%s'", text, expected)
-		}
+	t.Run("test grpc server", func(t *testing.T) {
+		t.Run("meow", func(t *testing.T) {
+			t.Parallel()
+			response, err := client.BoyfriendBot(context.TODO(), &api.BoyfriendRequest{})
+			if err != nil {
+				t.Fatal(err.Error())
+			}
+			text := response.GetEmoji()
+			expected := "🐢"
+			if text != expected {
+				t.Errorf("response text '%s' does not contian '%s'", text, expected)
+			}
+		})
 	})
 }

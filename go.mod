@@ -9,12 +9,14 @@ require (
 	github.com/golang/mock v1.6.0
 	google.golang.org/grpc v1.49.0
 	google.golang.org/protobuf v1.28.1
+	k8s.io/klog/v2 v2.80.1
 )
 
 require (
 	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
 	github.com/docker/go-units v0.5.0 // indirect
+	github.com/go-logr/logr v1.2.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/moby/term v0.0.0-20221105221325-4eb28fa6025c // indirect

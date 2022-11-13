@@ -1,4 +1,4 @@
-.PHONY: gen build push apply all run emissary emissary-update db dbcli test-go test-ts test tools tools-kubectl tools-protobuf tools-grpc-web
+.PHONY: gen build push apply all run emissary emissary-update db dbcli test-go test-ts test tools tools-kubectl tools-protobuf tools-grpc-web lint lint-ts lint-go
 
 gen-grpc:
 	rm -rf ./src/api
@@ -67,8 +67,8 @@ dbcli:
 test-ts:
 	yarn test --watchAll=false
 	
-test-go:
-	go test ./...
+test-go: lint-go
+	go test -run \S*TestIndex$  ./...
 
 test: test-go test-ts
 
@@ -89,3 +89,6 @@ tools-grpc-web:
 	curl https://github.com/grpc/grpc-web/releases/download/1.4.2/protoc-gen-grpc-web-1.4.2-darwin-x86_64 \
 		-Lo /usr/local/bin/protoc-gen-grpc-web
 	sudo chmod +x /usr/local/bin/protoc-gen-grpc-web
+
+lint-go:
+	errcheck -ignoretests ./...

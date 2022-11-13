@@ -32,8 +32,8 @@ func NewBaseDBCli(driver, hostName string) (*BaseDBCli, error) {
 	return db, nil
 }
 
-func (b *BaseDBCli) makeDB(dbName string) error {
-	_, err := b.rootClient.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s;", dbName))
+func (b *BaseDBCli) makeDB(ctx context.Context, dbName string) error {
+	_, err := b.rootClient.ExecContext(ctx, fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s;", dbName))
 	return err
 }
 
@@ -42,8 +42,8 @@ func (b *BaseDBCli) makeCli(dbName string) (*sql.DB, error) {
 }
 
 // EnsureDBandClient ensures that the DB exists, then creates a client for it
-func (b *BaseDBCli) EnsureDBandCli(dbName string) (*sql.DB, error) {
-	err := b.makeDB(dbName)
+func (b *BaseDBCli) EnsureDBandCli(ctx context.Context, dbName string) (*sql.DB, error) {
+	err := b.makeDB(ctx, dbName)
 	if err != nil {
 		return nil, err
 	}

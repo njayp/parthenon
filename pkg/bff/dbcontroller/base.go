@@ -1,8 +1,11 @@
 package dbcontroller
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
+
+	"github.com/njayp/parthenon/pkg/bff/dbcli"
 )
 
 const (
@@ -10,19 +13,16 @@ const (
 )
 
 type BaseDBController struct {
-	client *sql.DB
+	Client *sql.DB
 }
 
-// not thread-safe
-func (b *BaseDBController) SetClient(client *sql.DB) {
-	b.client = client
+func (b *BaseDBController) BaseEnsureTable(ctx context.Context, tableName, props string) error {
+	_, err := b.Client.ExecContext(ctx, fmt.Sprintf(ENSURE_TABLE, tableName, props))
+	return err
 }
 
-func (b *BaseDBController) GetClient() *sql.DB {
-	return b.client
-}
-
-func (b *BaseDBController) BaseEnsureTable(tableName, props string) error {
-	_, err := b.client.Exec(fmt.Sprintf(ENSURE_TABLE, tableName, props))
+func (b *BaseDBController) EnsureDBandCli(ctx context.Context, db dbcli.DBCli, dbName string) error {
+	var err error
+	b.Client, err = db.EnsureDBandCli(ctx, dbName)
 	return err
 }
