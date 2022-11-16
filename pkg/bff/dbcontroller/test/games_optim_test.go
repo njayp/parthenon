@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/njayp/parthenon/pkg/bff/dbcontroller/games"
 	"github.com/njayp/parthenon/pkg/bff/dbcontroller/games/spatialindex"
 )
@@ -31,7 +32,7 @@ func TestGamesOptimization(t *testing.T) {
 }
 
 func gamesOptimization(ctx context.Context, t *testing.T, dbc *spatialindex.SpatialIndexDBC) {
-	t.Run("optimization", func(t *testing.T) {
+	t.Run("games optimization", func(t *testing.T) {
 		t.Parallel()
 
 		// add game to run queries
@@ -42,12 +43,11 @@ func gamesOptimization(ctx context.Context, t *testing.T, dbc *spatialindex.Spat
 		}
 
 		// add user to prime queries
-		userid := "testuserid"
+		userid := uuid.New().String()
 		dbc.SetUserLocation(ctx, userid, "0", "0")
 		dbc.AddUser(ctx, gameName, userid)
 
 		t.Run("use EXPLAIN on search query. Ensure it uses the index", func(t *testing.T) {
-			t.Parallel()
 			query := fmt.Sprintf("EXPLAIN "+spatialindex.RADIUS_QUERY, games.UserLocationVarName(userid), gameName, games.UserLocationVarName(userid))
 			row := dbc.Client.QueryRow(query)
 
@@ -64,12 +64,5 @@ func gamesOptimization(ctx context.Context, t *testing.T, dbc *spatialindex.Spat
 				t.Error(fmt.Errorf("\nquery type: %s\nsearch type: %s\npossible: %s\nkey: %s\nkey len:%s", selectType.String, searchtype.String, possibleKeys.String, key.String, keyLen.String))
 			}
 		})
-
-		/*
-			t.Run("test error", func(t *testing.T) {
-				t.Parallel()
-				t.Error(1)
-			})
-		*/
 	})
 }

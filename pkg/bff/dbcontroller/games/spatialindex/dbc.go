@@ -12,7 +12,7 @@ import (
 
 const (
 	// this uses index
-	RADIUS_QUERY = `SELECT userid, ST_Distance_Sphere(location, %s)
+	RADIUS_QUERY = `SELECT BIN_TO_UUID(userid), ST_Distance_Sphere(location, %s)
 	FROM %s
 	WHERE ST_Contains(ST_Buffer(%s, 25000), location);`
 	TABLE_PROPS = `pk INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -20,7 +20,7 @@ const (
 	userid BINARY(16),
 	SPATIAL INDEX(location)`
 	INSERT_QUERY = `INSERT INTO %s(location, userid)
-	VALUES (%s,'%s');`
+	VALUES (%s,UUID_TO_BIN('%s'));`
 	SET_USER_LOCATION_QUERY = `SET %s = ST_GeomFromText('POINT(%s %s)', 4326);`
 )
 
@@ -42,10 +42,10 @@ func (c *SpatialIndexDBC) EnsureGameTable(ctx context.Context, tableName string)
 	)
 }
 
-// TODO make thread-safe
 func (c *SpatialIndexDBC) SetUserLocation(ctx context.Context, userid, latitude, longitude string) error {
+	uservar := games.UserLocationVarName(userid)
 	query := fmt.Sprintf(SET_USER_LOCATION_QUERY,
-		games.UserLocationVarName(userid),
+		uservar,
 		latitude, longitude,
 	)
 	_, err := c.Client.ExecContext(ctx, query)
@@ -53,10 +53,11 @@ func (c *SpatialIndexDBC) SetUserLocation(ctx context.Context, userid, latitude,
 }
 
 func (c *SpatialIndexDBC) AddUser(ctx context.Context, tableName, userid string) error {
+	uservar := games.UserLocationVarName(userid)
 	query := fmt.Sprintf(
 		INSERT_QUERY,
 		tableName,
-		games.UserLocationVarName(userid),
+		uservar,
 		userid,
 	)
 	_, err := c.Client.ExecContext(ctx, query)
@@ -64,10 +65,11 @@ func (c *SpatialIndexDBC) AddUser(ctx context.Context, tableName, userid string)
 }
 
 func (c *SpatialIndexDBC) SearchRadius(ctx context.Context, tableName, userid string) (*sql.Rows, error) {
+	uservar := games.UserLocationVarName(userid)
 	query := fmt.Sprintf(RADIUS_QUERY,
-		games.UserLocationVarName(userid),
+		uservar,
 		tableName,
-		games.UserLocationVarName(userid),
+		uservar,
 	)
 	return c.Client.QueryContext(ctx, query)
 }

@@ -68,7 +68,7 @@ test-ts:
 	yarn test --watchAll=false
 	
 test-go: lint-go
-	go test -run \S*TestIndex$  ./...
+	go test -run TestIndex ./...
 
 test: test-go test-ts
 

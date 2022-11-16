@@ -2,6 +2,7 @@ package uuidindex
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
 	"github.com/njayp/parthenon/pkg/bff/dbcli"
@@ -10,12 +11,12 @@ import (
 
 const (
 	// TODO
-	TABLE_PROPS = `pk INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	location POINT NOT NULL SRID 4326,
-	userid BINARY(16),
-	SPATIAL INDEX(location)`
-	INSERT_QUERY = `INSERT INTO %s(location, userid)
-	VALUES (%s);`
+	TABLE_PROPS  = `userid BINARY(16) NOT NULL PRIMARY KEY`
+	INSERT_QUERY = `INSERT INTO %s(userid)
+	VALUES (UUID_TO_BIN('%s'));`
+	GET_QUERY = `SELECT BIN_TO_UUID(userid)
+	FROM %s
+	WHERE userid = UUID_TO_BIN('%s')`
 )
 
 var (
@@ -35,16 +36,16 @@ func NewUUIDIndexDBC(ctx context.Context, db dbcli.DBCli) (*UUIDIndexDBC, error)
 	}
 
 	for _, tribe := range TRIBES {
-		err = dbc.EnsureUserTable(ctx, tribe)
+		err = dbc.ensureUserTable(ctx, tribe)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	return dbc, err
+	return dbc, nil
 }
 
-func (u *UUIDIndexDBC) EnsureUserTable(ctx context.Context, tableName string) error {
+func (u *UUIDIndexDBC) ensureUserTable(ctx context.Context, tableName string) error {
 	return u.BaseEnsureTable(
 		ctx,
 		tableName,
@@ -53,7 +54,6 @@ func (u *UUIDIndexDBC) EnsureUserTable(ctx context.Context, tableName string) er
 }
 
 func (u *UUIDIndexDBC) AddUser(ctx context.Context, tableName, userid string) error {
-	// TODO
 	query := fmt.Sprintf(
 		INSERT_QUERY,
 		tableName,
@@ -61,4 +61,13 @@ func (u *UUIDIndexDBC) AddUser(ctx context.Context, tableName, userid string) er
 	)
 	_, err := u.Client.ExecContext(ctx, query)
 	return err
+}
+
+func (u *UUIDIndexDBC) GetUser(ctx context.Context, tableName, userid string) *sql.Row {
+	query := fmt.Sprintf(
+		GET_QUERY,
+		tableName,
+		userid,
+	)
+	return u.Client.QueryRowContext(ctx, query)
 }
