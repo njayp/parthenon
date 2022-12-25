@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/njayp/parthenon/pkg/bff/dbcontroller/games/spatialindex"
+	"github.com/njayp/parthenon/pkg/db/dbcontroller/games/spatialindex"
 )
 
 func TestGamesFunctionality(t *testing.T) {

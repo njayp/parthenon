@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/njayp/parthenon/pkg/bff/dbcontroller/users/uuidindex"
+	"github.com/njayp/parthenon/pkg/db/dbcontroller/users/uuidindex"
 )
 
 func TestUsersOptimization(t *testing.T) {

@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/njayp/parthenon/pkg/bff/dbcli"
+	"github.com/njayp/parthenon/pkg/db/dbcli"
 )
 
 const (

@@ -4,8 +4,8 @@ import (
 	"flag"
 	"log"
 
-	"github.com/njayp/parthenon/pkg/bff/grpcServer"
-	"github.com/njayp/parthenon/pkg/bff/httpServer"
+	"github.com/njayp/parthenon/pkg/server/grpcServer"
+	"github.com/njayp/parthenon/pkg/server/httpServer"
 
 	"google.golang.org/grpc"
 )

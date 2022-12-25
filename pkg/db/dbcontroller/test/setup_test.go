@@ -12,10 +12,10 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
-	"github.com/njayp/parthenon/pkg/bff/dbcli"
-	"github.com/njayp/parthenon/pkg/bff/dbcli/mysqlCli"
-	"github.com/njayp/parthenon/pkg/bff/dbcontroller/games/spatialindex"
-	"github.com/njayp/parthenon/pkg/bff/dbcontroller/users/uuidindex"
+	"github.com/njayp/parthenon/pkg/db/dbcli"
+	"github.com/njayp/parthenon/pkg/db/dbcli/mysqlCli"
+	"github.com/njayp/parthenon/pkg/db/dbcontroller/games/spatialindex"
+	"github.com/njayp/parthenon/pkg/db/dbcontroller/users/uuidindex"
 )
 
 type RmImageFunc = func(context.Context) error
