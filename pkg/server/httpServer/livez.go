@@ -9,5 +9,7 @@ import (
 
 func livez(w http.ResponseWriter, req *http.Request) {
 	_, err := fmt.Fprint(w, "http ok")
-	klog.Error(err)
+	if err != nil {
+		klog.Error(err)
+	}
 }

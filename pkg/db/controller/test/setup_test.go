@@ -12,10 +12,10 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
-	"github.com/njayp/parthenon/pkg/db/dbcli"
-	"github.com/njayp/parthenon/pkg/db/dbcli/mysqlCli"
-	"github.com/njayp/parthenon/pkg/db/dbcontroller/games/spatialindex"
-	"github.com/njayp/parthenon/pkg/db/dbcontroller/users/uuidindex"
+	"github.com/njayp/parthenon/pkg/db/cli"
+	"github.com/njayp/parthenon/pkg/db/cli/mysqlCli"
+	"github.com/njayp/parthenon/pkg/db/controller/games/spatialindex"
+	"github.com/njayp/parthenon/pkg/db/controller/users/uuidindex"
 )
 
 type RmImageFunc = func(context.Context) error
@@ -71,7 +71,7 @@ func DockerRunMYSQL(ctx context.Context) (RmImageFunc, error) {
 
 // setupDB runs MYSQL on a docker container and waits for it to start up.
 // Returns mysqlCli, rmContainer, err
-func setupDB(ctx context.Context) (dbcli.DBCli, RmImageFunc, error) {
+func setupDB(ctx context.Context) (cli.DBCli, RmImageFunc, error) {
 	rm, err := DockerRunMYSQL(ctx)
 	if err != nil {
 		return nil, nil, err

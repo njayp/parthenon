@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/njayp/parthenon/pkg/daemon/user"
+	"github.com/njayp/parthenon/pkg/daemon"
 	"github.com/njayp/parthenon/pkg/server/grpcServer"
 	"github.com/njayp/parthenon/pkg/server/httpServer"
 
@@ -31,21 +31,11 @@ func main() {
 }
 
 func daemonMain() error {
-	d := user.NewDaemon("parth")
-	err := d.Install()
-	if err != nil {
-		return err
-	}
-	err = d.Start()
-	if err != nil {
-		return err
-	}
-	//fmt.Scanln()
-	//return d.Stop()
-	return nil
+	d := daemon.NewDaemon("parth")
+	return d.Stop()
 }
 
-func serverMain() {
+func serverMain() error {
 	flag.Parse()
 	ch := make(chan error)
 	go func() {
@@ -72,6 +62,5 @@ func serverMain() {
 		ch <- httpServer.Start(*httpPort)
 	}()
 
-	err := <-ch
-	klog.Fatal(err)
+	return <-ch
 }

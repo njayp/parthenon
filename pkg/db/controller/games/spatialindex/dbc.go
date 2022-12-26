@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/njayp/parthenon/pkg/db/dbcli"
-	"github.com/njayp/parthenon/pkg/db/dbcontroller"
-	"github.com/njayp/parthenon/pkg/db/dbcontroller/games"
+	"github.com/njayp/parthenon/pkg/db/cli"
+	"github.com/njayp/parthenon/pkg/db/controller"
+	"github.com/njayp/parthenon/pkg/db/controller/games"
 )
 
 const (
@@ -25,10 +25,10 @@ const (
 )
 
 type SpatialIndexDBC struct {
-	dbcontroller.BaseDBController
+	controller.BaseDBController
 }
 
-func NewSpatialIndexDBC(ctx context.Context, db dbcli.DBCli) (*SpatialIndexDBC, error) {
+func NewSpatialIndexDBC(ctx context.Context, db cli.DBCli) (*SpatialIndexDBC, error) {
 	dbc := &SpatialIndexDBC{}
 	err := dbc.EnsureDBandCli(ctx, db, "games")
 	return dbc, err

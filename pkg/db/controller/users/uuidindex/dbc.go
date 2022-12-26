@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/njayp/parthenon/pkg/db/dbcli"
-	"github.com/njayp/parthenon/pkg/db/dbcontroller"
+	"github.com/njayp/parthenon/pkg/db/cli"
+	"github.com/njayp/parthenon/pkg/db/controller"
 )
 
 const (
@@ -24,10 +24,10 @@ var (
 )
 
 type UUIDIndexDBC struct {
-	dbcontroller.BaseDBController
+	controller.BaseDBController
 }
 
-func NewUUIDIndexDBC(ctx context.Context, db dbcli.DBCli) (*UUIDIndexDBC, error) {
+func NewUUIDIndexDBC(ctx context.Context, db cli.DBCli) (*UUIDIndexDBC, error) {
 	dbc := &UUIDIndexDBC{}
 
 	err := dbc.EnsureDBandCli(ctx, db, "users")

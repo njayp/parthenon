@@ -2,7 +2,7 @@ package mysqlCli
 
 import (
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/njayp/parthenon/pkg/db/dbcli"
+	dbcli "github.com/njayp/parthenon/pkg/db/cli"
 )
 
 // NewMYSQLDBCli returns mysql client factory

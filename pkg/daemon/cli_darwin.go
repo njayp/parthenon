@@ -1,6 +1,6 @@
 //go:build darwin
 
-package user
+package daemon
 
 import (
 	"fmt"

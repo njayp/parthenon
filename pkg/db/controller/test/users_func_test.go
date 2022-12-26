@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/njayp/parthenon/pkg/db/dbcontroller/users/uuidindex"
+	"github.com/njayp/parthenon/pkg/db/controller/users/uuidindex"
 )
 
 func TestUsersFunctionality(t *testing.T) {

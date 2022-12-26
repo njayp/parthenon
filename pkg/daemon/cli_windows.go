@@ -1,6 +1,6 @@
 //go:build windows
 
-package user
+package daemon
 
 import (
 	"fmt"

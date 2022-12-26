@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/njayp/parthenon/pkg/db/dbcontroller/games"
-	"github.com/njayp/parthenon/pkg/db/dbcontroller/games/spatialindex"
+	"github.com/njayp/parthenon/pkg/db/controller/games"
+	"github.com/njayp/parthenon/pkg/db/controller/games/spatialindex"
 )
 
 const (

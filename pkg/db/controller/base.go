@@ -1,11 +1,11 @@
-package dbcontroller
+package controller
 
 import (
 	"context"
 	"database/sql"
 	"fmt"
 
-	"github.com/njayp/parthenon/pkg/db/dbcli"
+	"github.com/njayp/parthenon/pkg/db/cli"
 )
 
 const (
@@ -21,7 +21,7 @@ func (b *BaseDBController) BaseEnsureTable(ctx context.Context, tableName, props
 	return err
 }
 
-func (b *BaseDBController) EnsureDBandCli(ctx context.Context, db dbcli.DBCli, dbName string) error {
+func (b *BaseDBController) EnsureDBandCli(ctx context.Context, db cli.DBCli, dbName string) error {
 	var err error
 	b.Client, err = db.EnsureDBandCli(ctx, dbName)
 	return err
