@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/njayp/parthenon/pkg/bff/httpServer"
+	"github.com/njayp/parthenon/pkg/server/httpServer"
 )
 
 func TestIndex(t *testing.T) {

@@ -2,11 +2,11 @@ package grpcServer
 
 import (
 	"fmt"
-	"log"
 	"net"
 
 	"github.com/njayp/parthenon/pkg/api"
 	"google.golang.org/grpc"
+	"k8s.io/klog/v2"
 )
 
 type Server struct {
@@ -14,7 +14,7 @@ type Server struct {
 }
 
 func Start(port int, opts []grpc.ServerOption) error {
-	log.Printf("grpc listening on port %v", port)
+	klog.Infof("grpc listening on port %v", port)
 	address := fmt.Sprintf(":%v", port)
 	lis, err := net.Listen("tcp", address)
 	if err != nil {

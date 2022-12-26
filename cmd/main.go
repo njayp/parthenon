@@ -2,10 +2,12 @@ package main
 
 import (
 	"flag"
-	"log"
 
+	"github.com/njayp/parthenon/pkg/daemon/user"
 	"github.com/njayp/parthenon/pkg/server/grpcServer"
 	"github.com/njayp/parthenon/pkg/server/httpServer"
+
+	"k8s.io/klog/v2"
 
 	"google.golang.org/grpc"
 )
@@ -22,7 +24,25 @@ var (
 )
 
 func main() {
-	serverMain()
+	err := daemonMain()
+	if err != nil {
+		klog.Fatal(err)
+	}
+}
+
+func daemonMain() error {
+	d := user.NewDaemon("parth")
+	err := d.Install()
+	if err != nil {
+		return err
+	}
+	err = d.Start()
+	if err != nil {
+		return err
+	}
+	//fmt.Scanln()
+	//return d.Stop()
+	return nil
 }
 
 func serverMain() {
@@ -40,7 +60,7 @@ func serverMain() {
 				}
 				creds, err := credentials.NewServerTLSFromFile(*certFile, *keyFile)
 				if err != nil {
-					log.Fatalf("Failed to generate credentials %v", err)
+					klog.Fatalf("Failed to generate credentials %v", err)
 				}
 				opts = []grpc.ServerOption{grpc.Creds(creds)}
 			}
@@ -53,5 +73,5 @@ func serverMain() {
 	}()
 
 	err := <-ch
-	log.Fatal(err.Error())
+	klog.Fatal(err)
 }

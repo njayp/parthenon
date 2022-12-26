@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/njayp/parthenon/pkg/api"
-	"github.com/njayp/parthenon/pkg/bff/grpcServer"
+	"github.com/njayp/parthenon/pkg/server/grpcServer"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

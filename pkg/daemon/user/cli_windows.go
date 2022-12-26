@@ -1,6 +1,6 @@
 //go:build windows
 
-package userdaemon
+package user
 
 import (
 	"fmt"
@@ -10,5 +10,5 @@ import (
 )
 
 func LoadAndLaunch(binaryName string) {
-	log.Fatal("Windows userd not impl")
+	klog.Fatal("Windows userd not impl")
 }

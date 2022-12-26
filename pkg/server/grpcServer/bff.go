@@ -2,9 +2,9 @@ package grpcServer
 
 import (
 	"context"
-	"log"
 
 	"github.com/njayp/parthenon/pkg/api"
+	"k8s.io/klog/v2"
 )
 
 type BFFServer struct {
@@ -12,7 +12,7 @@ type BFFServer struct {
 }
 
 func (s *BFFServer) BoyfriendBot(context.Context, *api.BoyfriendRequest) (*api.BoyfriendResponse, error) {
-	log.Print("Recieved Meow")
+	klog.Infof("Recieved Meow")
 	return &api.BoyfriendResponse{
 		Emoji: "🐢",
 	}, nil

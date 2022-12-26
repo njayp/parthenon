@@ -2,14 +2,15 @@ package httpServer
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+
+	"k8s.io/klog/v2"
 )
 
 func Start(port int) error {
 	http.HandleFunc("/livez/", livez)
 
-	log.Printf("http listening on port %v", port)
+	klog.Infof("http listening on port %v", port)
 	address := fmt.Sprintf(":%v", port)
 	return http.ListenAndServe(address, nil)
 }
