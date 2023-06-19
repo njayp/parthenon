@@ -27,17 +27,8 @@ const pListTemplate = `
 </plist>
 `
 
-// Daemon defines a service
-type Daemon struct {
-	Label     string
-	Program   string
-	KeepAlive bool
-	RunAtLoad bool
-	plistPath string
-}
-
 // NewDaemon constructs a launchd service.
-func NewDaemon(binaryName string) Daemon {
+func NewDaemon(binaryName string) *Daemon {
 	home := os.Getenv("HOME")
 	gopath := os.Getenv("GOPATH")
 	if gopath == "" {
@@ -53,7 +44,7 @@ func NewDaemon(binaryName string) Daemon {
 	}
 }
 
-func (d Daemon) Install() error {
+func (d *Daemon) Install() error {
 	f, err := os.OpenFile(d.plistPath, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		return fmt.Errorf("error opening path %s: %s", d.plistPath, err)
@@ -67,7 +58,7 @@ func (d Daemon) Install() error {
 }
 
 // Start will start the service.
-func (d Daemon) Start() error {
+func (d *Daemon) Start() error {
 	klog.Infof("Starting %s", d.Label)
 	// We start using load -w on plist file
 	output, err := exec.Command("/bin/launchctl", "load", "-w", d.plistPath).CombinedOutput()
@@ -75,7 +66,7 @@ func (d Daemon) Start() error {
 	return err
 }
 
-func (d Daemon) Stop() error {
+func (d *Daemon) Stop() error {
 	// We stop by removing the job. This works for non-demand and demand jobs.
 	output, err := exec.Command("/bin/launchctl", "unload", d.plistPath).CombinedOutput()
 	klog.Infof("Output (launchctl remove): %s", string(output))
